@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVER FLORIST FINCA NÁPOLES - ECUADOR</title>
+  <style>
+    /* --- FUENTES Y ESTILO GENERAL --- */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      background-color: #4AC5F7;
+    }
+
+    /* --- MENÚ DE NAVEGACIÓN --- */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      padding: 15px 0;
+      z-index: 1000;
+      border-bottom: 2px solid #fff;
+    }
+    .navbar a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    .navbar a:hover { color: #FFD700; }
+
+    /* --- SECCIONES --- */
+    section { padding: 60px 20px; text-align: center; }
+    h2 { color: #fff; }
+
+    /* --- TARJETAS DE VARIEDADES --- */
+    .variedades { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
+    .card {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+      opacity: 0;
+      transform: translateY(50px);
+      position: relative;
+    }
+    .card img { max-width: 100%; border-radius: 12px; }
+    .card.visible { opacity: 1; transform: translateY(0); transition: all 0.6s ease-out; }
+    .card:hover { transform: scale(1.05); background: rgba(255,255,255,0.2); }
+
+    /* BOTONES VER MÁS */
+    .ver-mas-btn { margin-top: 10px; padding: 10px 20px; border:none; border-radius:10px; background: linear-gradient(45deg, #FFD700,#FFA500); color:#fff; cursor:pointer; box-shadow:0 0 15px rgba(255,215,0,0.5); transition:0.3s; }
+    .ver-mas-btn:hover { transform: scale(1.1); box-shadow:0 0 25px rgba(255,215,0,0.8); }
+
+    /* --- Banderas --- */
+    .flags { display: flex; justify-content: center; align-items: center; gap: 40px; margin-top: 30px; }
+    .flags img { width: 120px; transition: transform 0.5s; }
+    .flags img:hover { transform: scale(1.2) rotate(5deg); }
+
+    /* --- WhatsApp flotante --- */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #25D366;
+      color: #fff;
+      border-radius: 50%;
+      width: 60px; height: 60px;
+      display: flex; justify-content:center; align-items:center;
+      box-shadow:0 4px 8px rgba(0,0,0,0.2);
+      z-index:1000;
+      transition: transform 0.3s;
+    }
+    .whatsapp-float:hover { transform: scale(1.2); }
+
+    /* --- LOGO ANIMADO --- */
+    .logo-animado {
+      animation: aparecerLogo 1.5s ease forwards, flotarLogo 6s ease-in-out infinite alternate;
+    }
+    @keyframes aparecerLogo {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes flotarLogo {
+      0% { transform: scale(1) translateY(0px); }
+      50% { transform: scale(1.02) translateY(-8px); }
+      100% { transform: scale(1) translateY(0px); }
+    }
+
+    /* --- BIENVENIDA NEON CON DESTELLO --- */
+    .bienvenida-neon {
+      font-size: 2.2rem;
+      margin-bottom: 40px;
+      position: relative;
+      color: #fff;
+      text-shadow: 0 0 5px #fff, 0 0 10px #FFD700, 0 0 20px #FFA500, 0 0 30px #FFD700;
+      animation: aparecerTexto 1.8s ease forwards;
+      overflow: hidden;
+    }
+    @keyframes aparecerTexto {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .bienvenida-neon::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 100%);
+      transform: skewX(-25deg);
+      animation: shine 2.5s infinite;
+    }
+    @keyframes shine { 0% { left: -75%; } 100% { left: 125%; } }
+
+    /* --- MODAL PEQUEÑO --- */
+    #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:2000; }
+    #modal-content { background:#fff; color:#000; padding:20px; border-radius:12px; max-width:400px; width:90%; text-align:center; position:relative; }
+    .close { position:absolute; top:10px; right:15px; cursor:pointer; font-size:24px; font-weight:bold; }
+    #modal img { width:80%; border-radius:10px; margin-bottom:10px; }
+  </style>
+</head>
+<body>
+
+  <!-- Menú -->
+  <div class="navbar">
+    <a href="#inicio">Inicio</a>
+    <a href="#variedades">Variedades</a>
+    <a href="#exportacion">Exportación</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+
+  <!-- Inicio -->
+  <section id="inicio" style="
+    padding: 120px 20px;
+    text-align: center;
+    background: linear-gradient(to bottom, rgba(140,69,247,0.85), rgba(74,197,247,0.85)), url('Imagenes/rosas-fondo.jpg') center/cover no-repeat;
+    color: #fff;
+    position: relative;
+  ">
+    <div id="logo" style="margin-bottom: 20px;">
+      <img src="Imagenes/Florist-SIN FONDO.png" alt="Logo EVER FLORIST" class="logo-animado" style="max-width:300px; width:100%; height:auto;">
+    </div>
+
+    <h1 class="bienvenida-neon">
+      🌹 Bienvenidos a EVER FLORIST – Donde Cada Rosa Cuenta
+    </h1>
+
+    <button onclick="document.getElementById('variedades').scrollIntoView({behavior:'smooth'})" style="
+      padding: 15px 35px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255,215,0,0.6);
+      transition: all 0.3s ease-in-out;
+    " 
+    onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 0 30px rgba(255,215,0,0.9)';" 
+    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 0 20px rgba(255,215,0,0.6)';">
+      Ver Variedades
+    </button>
+  </section>
+
+  <!-- Variedades -->
+  <section id="variedades">
+    <h2>Nuestras Variedades</h2>
+    <div class="variedades">
+      <div class="card"><img src="Imagenes/Bells.jpg" alt="Bells">Bells<br><button class="ver-mas-btn" data-flor="Bells">Ver más</button></div>
+      <div class="card"><img src="Imagenes/Blue .jpg" alt="Blue">Blue<br><button class="ver-mas-btn" data-flor="Blue">Ver más</button></div>
+      <div class="card"><img src="Imagenes/Darck Purple.jpg" alt="Darck Purple">Darck Purple<br><button class="ver-mas-btn" data-flor="Darck Purple">Ver más</button></div>
+      <div class="card"><img src="Imagenes/Hit Pink.jpg" alt="Hit Pink">Hit Pink<br><button class="ver-mas-btn" data-flor="Hit Pink">Ver más</button></div>
+      <div class="card"><img src="Imagenes/Light Pink.jpg" alt="Light Pink">Light Pink<br><button class="ver-mas-btn" data-flor="Light Pink">Ver más</button></div>
+      <div class="card"><img src="Imagenes/Peach.jpg" alt="Peach">Peach<br><button class="ver-mas-btn" data-flor="Peach">Ver más</button></div>
+      <div class="card"><img src="Imagenes/Pink.jpg" alt="Pink">Pink<br><button class="ver-mas-btn" data-flor="Pink">Ver más</button></div>
+      <div class="card"><img src="Imagenes/Purple.jpg" alt="Purple">Purple<br><button class="ver-mas-btn" data-flor="Purple">Ver más</button></div>
+      <div class="card"><img src="Imagenes/Red - Ruby.jpg" alt="Red - Ruby">Red - Ruby<br><button class="ver-mas-btn" data-flor="Red - Ruby">Ver más</button></div>
+      <div class="card"><img src="Imagenes/White.jpg" alt="White">White<br><button class="ver-mas-btn" data-flor="White">Ver más</button></div>
+      <div class="card"><img src="Imagenes/Yellow.jpg" alt="Yellow">Yellow<br><button class="ver-mas-btn" data-flor="Yellow">Ver más</button></div>
+    </div>
+  </section>
+
+  <!-- Exportación -->
+  <section id="exportacion">
+    <h2>Exportación</h2>
+    <p>Conectamos Ecuador con el mundo, principalmente hacia Estados Unidos.</p>
+    <div class="flags">
+      <img src="https://flagcdn.com/w320/ec.png" alt="Ecuador">
+      <img src="https://flagcdn.com/w320/us.png" alt="Estados Unidos">
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto">
+    <h2>Contacto</h2>
+    <p>Ponte en contacto con nosotros para más información.</p>
+    <p>Email: info@everflorist.com</p>
+  </section>
+
+  <!-- WhatsApp flotante -->
+  <a href="https://wa.me/593999999999" class="whatsapp-float" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:35px; height:35px;">
+  </a>
+
+  <!-- Modal para Ver Más -->
+  <div id="modal">
+    <div id="modal-content">
+      <span class="close">&times;</span>
+      <img id="modal-img" src="" alt="">
+      <h3 id="modal-nombre"></h3>
+      <p id="modal-detalle">Descripción de la flor aquí.</p>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    // Animación de tarjetas
+    const cards = document.querySelectorAll('.card');
+    function animateCards() {
+      const triggerBottom = window.innerHeight * 0.85;
+      cards.forEach(card => {
+        const cardTop = card.getBoundingClientRect().top;
+        if(cardTop < triggerBottom) { card.classList.add('visible'); }
+      });
+    }
+    window.addEventListener('scroll', animateCards);
+    window.addEventListener('load', animateCards);
+
+    // Modal Ver Más
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalNombre = document.getElementById('modal-nombre');
+    const modalDetalle = document.getElementById('modal-detalle');
+    const closeBtn = document.querySelector('.close');
+
+    const flores = {
+      "Bells": { img:"Imagenes/Bells.jpg", detalle:"Flor elegante y vibrante." },
+      "Blue": { img:"Imagenes/Blue .jpg", detalle:"Rosa azul única y especial." },
+      "Darck Purple": { img:"Imagenes/Darck Purple.jpg", detalle:"Rosa morada intensa." },
+      "Hit Pink": { img:"Imagenes/Hit Pink.jpg", detalle:"Rosa rosa fuerte y llamativa." },
+      "Light Pink": { img:"Imagenes/Light Pink.jpg", detalle:"Rosa rosa clara delicada." },
+      "Peach": { img:"Imagenes/Peach.jpg", detalle:"Rosa melocotón suave." },
+      "Pink": { img:"Imagenes/Pink.jpg", detalle:"Rosa rosa clásica." },
+      "Purple": { img:"Imagenes/Purple.jpg", detalle:"Rosa morada elegante." },
+      "Red - Ruby": { img:"Imagenes/Red - Ruby.jpg", detalle:"Rosa roja intensa y preciosa." },
+      "White": { img:"Imagenes/White.jpg", detalle:"Rosa blanca pura." },
+      "Yellow": { img:"Imagenes/Yellow.jpg", detalle:"Rosa amarilla alegre." }
+    };
+
+    document.querySelectorAll('.ver-mas-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const flor = btn.dataset.flor;
+        modal.style.display="flex";
+        modalImg.src = flores[flor].img;
+        modalNombre.textContent = flor;
+        modalDetalle.textContent = flores[flor].detalle;
+      });
+    });
+
+    closeBtn.addEventListener('click', ()=>{ modal.style.display="none"; });
+    window.addEventListener('click', e => { if(e.target == modal){ modal.style.display="none"; } });
+  </script>
+
+</body>
+</html>
